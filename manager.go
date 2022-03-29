@@ -2,9 +2,9 @@ package sfm
 
 import (
 	"github.com/xbsoftware/wfs"
+	"github.com/xbsoftware/wfs-local"
 	"strings"
 )
-import "github.com/xbsoftware/wfs-local"
 
 type SiteFileManager struct {
 	RootPath    string
