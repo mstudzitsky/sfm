@@ -15,7 +15,7 @@ type SiteFileManager struct {
 func NewSiteFileManager(RootPath string, UploadLimit uint) (*SiteFileManager, error) {
 	policy := wfs.Policy(&wfs.AllowPolicy{})
 	driveConfig := &wfs.DriveConfig{
-		Verbose: false,
+		Verbose: true,
 		Policy:  &policy,
 	}
 	drive, err := local.NewLocalDrive(RootPath, driveConfig)
