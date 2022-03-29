@@ -29,7 +29,7 @@ func NewSiteFileManager(RootPath string, UploadLimit uint) (*SiteFileManager, er
 	}, nil
 }
 
-func (s *SiteFileManager) ls(dir string, ext ...string) ([]wfs.File, error) {
+func (s *SiteFileManager) Ls(dir string, ext ...string) ([]wfs.File, error) {
 	config := wfs.ListConfig{
 		SkipFiles:  false,
 		SubFolders: true,
