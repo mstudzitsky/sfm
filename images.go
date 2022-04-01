@@ -41,7 +41,7 @@ func (s *SiteFileManager) GetImage(path string, w uint, h uint, thumbnail bool) 
 		break
 	}
 	if err != nil {
-		return nil, "", fmt.Errorf("decoding %s: %v", format, err)
+		return nil, "", fmt.Errorf("decodin %s: %v", format, err)
 	}
 	if w != 0 || h != 0 {
 		return imageResize(&result, w, h, thumbnail), format, nil
