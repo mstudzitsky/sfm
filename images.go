@@ -2,9 +2,8 @@ package sfm
 
 import (
 	"fmt"
-	"github.com/kolesa-team/go-webp/decoder"
-	"github.com/kolesa-team/go-webp/webp"
 	"github.com/nfnt/resize"
+	"golang.org/x/image/webp"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -34,7 +33,7 @@ func (s *SiteFileManager) GetImage(path string, w uint, h uint, thumbnail bool) 
 		result, err = jpeg.Decode(file)
 		break
 	case "webp":
-		result, err = webp.Decode(file, &decoder.Options{})
+		result, err = webp.Decode(file)
 		format = "png"
 		break
 	default:
