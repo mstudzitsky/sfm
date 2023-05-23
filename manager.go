@@ -1,6 +1,7 @@
 package sfm
 
 import (
+	"errors"
 	"github.com/xbsoftware/wfs"
 	"github.com/xbsoftware/wfs-local"
 	"io"
@@ -114,6 +115,9 @@ func (s *SiteFileManager) Delete(folder string, name string) error {
 	file, err := s.Drive.Search(folder, name, &config)
 	if err != nil {
 		return err
+	}
+	if len(file) == 0 {
+		return errors.New("no such file")
 	}
 	err = s.Drive.Remove(file[0].ID + file[0].Name)
 	if err != nil {
