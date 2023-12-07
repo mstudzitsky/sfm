@@ -5,7 +5,7 @@ import (
 	"github.com/xbsoftware/wfs"
 	"github.com/xbsoftware/wfs-local"
 	"io"
-	"sort"
+	"slices"
 	"strings"
 )
 
@@ -36,41 +36,41 @@ func (s *SiteFileManager) Ls(dir string, ext ...string) ([]wfs.File, error) {
 		SubFolders: false,
 		Nested:     false,
 		Exclude:    func(name string) bool { return strings.HasPrefix(name, ".") },
-		Include: func(name string) bool {
-			for _, e := range ext {
-				if !strings.ContainsAny(e, ".") {
-					return true
-				}
-				if strings.HasSuffix(name, strings.ToLower(e)) {
-					return true
-				}
-			}
-			return false
-		},
 	}
 	files, err := s.Drive.List(dir, &config)
 	if err != nil {
 		return nil, err
 	}
-	sort.SliceStable(files, func(i, j int) bool {
-		if files[i].Type == files[j].Type {
-			return strings.Compare(files[i].Name, files[j].Name) == -1
+	files = slices.DeleteFunc(files, func(f wfs.File) bool {
+		if f.Type == "folder" {
+			return false
 		}
-		// sort folder first
-		var aOrder, bOrder int
-		if files[i].Type == "folder" {
-			aOrder = 0
-		} else {
-			aOrder = 1
+		for _, e := range ext {
+			if strings.HasSuffix(f.Name, strings.ToLower(e)) {
+				return false
+			}
 		}
-		if files[j].Type == "folder" {
-			bOrder = 0
-		} else {
-			bOrder = 1
-		}
-		return aOrder < bOrder
+		return true
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	if !slices.IsSortedFunc(files, cmpFiles) {
+		slices.SortFunc(files, cmpFiles)
+	}
 	return files, nil
+}
+
+func cmpFiles(f1, f2 wfs.File) int {
+	if f1.Type == f2.Type {
+		return strings.Compare(f1.Name, f2.Name)
+	} else if f1.Type == "folder" {
+		return -1
+	} else if f2.Type == "folder" {
+		return 1
+	}
+	return 0
 }
 
 func (s *SiteFileManager) Create(folder string, name string, file io.Reader) (*wfs.File, error) {

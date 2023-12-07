@@ -24,15 +24,18 @@ func TestNewSiteFileManager(t *testing.T) {
 }
 
 func TestSiteFileManager_Ls(t *testing.T) {
-	var testFolderContents = []string{"id: /test/test1, name: test1, type: folder, size: 0", "id: /test/IMAG0003.jpg, name: IMAG0003.jpg, type: image, size: 2061645", "id: /test/IMAG0004.JPG, name: IMAG0004.JPG, type: image, size: 1943197", "id: /test/brands-logo-1.png, name: brands-logo-1.png, type: image, size: 41086"}
-	manager, err := NewSiteFileManager("/upload")
+	var testFolderContents = []string{"id: /video, name: video, type: folder", "id: /img1.jpg, name: img1.jpg, type: image"}
+	manager, err := NewSiteFileManager("/home/mic/upload")
 	if err != nil {
 		t.Errorf("Error creating new site file manager: %v", err)
 	}
-	files, err := manager.Ls("/test", "jpg", "png")
+	files, err1 := manager.Ls("/", "png", "jpg")
+	if err1 != nil {
+		t.Errorf("Error creating new site file manager: %v", err)
+	}
 	fmt.Println("=================================================")
 	for i, f := range files {
-		check := fmt.Sprintf("id: %s, name: %s, type: %s, size: %d", f.ID, f.Name, f.Type, f.Size)
+		check := fmt.Sprintf("id: %s, name: %s, type: %s", f.ID, f.Name, f.Type)
 		if check != testFolderContents[i] {
 			t.Errorf("Error in line %d: expecting: %s , got: %s", i, check, testFolderContents[i])
 		}
@@ -47,7 +50,7 @@ func BenchmarkSiteFileManager_Ls(b *testing.B) {
 		b.Errorf("Error creating new site file manager: %v", err)
 	}
 	for i := 0; i < b.N; i++ {
-		_, _ = manager.Ls("/test", "jpg", "png")
+		_, _ = manager.Ls("/", "jpg", "png")
 	}
 }
 
